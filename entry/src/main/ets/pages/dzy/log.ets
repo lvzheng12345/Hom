@@ -1,10 +1,7 @@
-import axios, { AxiosResponse } from '@ohos/axios';
+import { AxiosResponse } from '@ohos/axios';
 import { Prompt, router } from '@kit.ArkUI';
-
-interface GeneratedObjectLiteralInterface_1 {
-  username: string;
-  password: string;
-}
+import { HttpUtils, LoginData } from '../../entryability/HttpUtils';
+import { Action } from '@ohos.multimodalInput.touchEvent';
 
 @Entry
 @Component
@@ -12,8 +9,6 @@ struct Log {
   @State username: string = '';
   @State password: string = '';
   @State isLoading: boolean = false;
-
-  private loginUrl: string = 'http://127.0.0.1:8085/api/users/login';
 
   // 登录方法
   private async login() {
@@ -23,27 +18,22 @@ struct Log {
     }
     this.isLoading = true;
 
-    const loginData: GeneratedObjectLiteralInterface_1 = {
+    const loginData: LoginData = {
       username: this.username,
       password: this.password
     };
 
     try {
-      const response: AxiosResponse = await axios.post(this.loginUrl, loginData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const response: AxiosResponse = await HttpUtils.login(loginData);
 
       console.log('登录响应:', JSON.stringify(response.data));
 
       if (response.status === 200) {
         Prompt.showToast({ message: '登录成功' });
         router.replaceUrl({
-          url:'pages/dzy/Welcome'
+          url:'pages/dzy/Introduction'
         });
         console.log('用户信息:', JSON.stringify(response.data));
-
       }
     } catch (error) {
       console.error('登录失败:', error);
@@ -124,7 +114,37 @@ struct Log {
           .fontSize(14)
           .fontColor('#007AFF')
           .onClick(() => {
-            Prompt.showToast({ message: '忘记密码功能' });
+
+            AlertDialog.show({
+              title:'确定',
+              message:'暂时没有',
+          //     confirm:{
+          //       value:'确定',
+          //       fontColor: '#ffdb0f4f',
+          //       action:()=>{
+          // router.pushUrl({
+          //   url:'pages/Index'
+          //       })
+          //       },
+          //     },
+              primaryButton:{
+              value:'取消',
+                action:()=>{
+
+                }
+              },
+              secondaryButton:{
+                value:'确定',
+                action:()=>{
+
+                }
+
+              }
+              // cancel:()=>{
+              //   Prompt.showToast({message:'重新登录'})
+              // }
+            })
+
           })
 
         Blank()
@@ -132,10 +152,12 @@ struct Log {
           .fontSize(14)
           .fontColor('#007AFF')
           .onClick(() => {
-            router.pushUrl({
-              url:'pages/dzy/Register'
-            });
-            Prompt.showToast({ message: '注册功能' });
+            DatePickerDialog.show({
+showTime:true
+            })
+            // router.pushUrl({
+            //   url:'pages/dzy/Register'
+            // });
           })
       }
       .width('100%')

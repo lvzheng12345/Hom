@@ -4,6 +4,7 @@
     "pages/dzy/Page1",
     "pages/dzy/log",
     "pages/dzy/Welcome",
-    "pages/dzy/Register"
+    "pages/dzy/Register",
+    "pages/dzy/Introduction"
   ]
 }
