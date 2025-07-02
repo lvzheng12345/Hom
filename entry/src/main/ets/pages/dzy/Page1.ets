@@ -7,9 +7,6 @@ import {AxiosResponse} from '@ohos/axios';
 struct Page1 {
   @State message: string = 'Hello World';
 kurl:string= 'http://127.0.0.1:8085/api/users'
-  //'http://101.35.2.25/api/dingzhi/10005359001.php?id=10005710&key=3f7b70ec3cd258870ee0c26406c39fbc&url=https://baijiahao.baidu.com/s?id=1827926431094281488&ck='
-  //'https://cn.apihz.cn/api/dingzhi/10005359001.php?id=10005672&key=341014a318853eaa8ab2437743b2ef29&type=1&limit=50&px=1&pubtime=30'
-  // 'https://api.example.com/data'
   aboutToAppear(): void {
     let httpRequest = http.createHttp();
     httpRequest.request(this.kurl, {

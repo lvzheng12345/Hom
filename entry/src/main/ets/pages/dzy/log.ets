@@ -1,23 +1,150 @@
+import axios, { AxiosResponse } from '@ohos/axios';
+import { Prompt, router } from '@kit.ArkUI';
+
+interface GeneratedObjectLiteralInterface_1 {
+  username: string;
+  password: string;
+}
+
 @Entry
 @Component
 struct Log {
-  @State message: string = 'Hello World';
+  @State username: string = '';
+  @State password: string = '';
+  @State isLoading: boolean = false;
+
+  private loginUrl: string = 'http://127.0.0.1:8085/api/users/login';
+
+  // 登录方法
+  private async login() {
+    if (!this.username || !this.password) {
+      Prompt.showToast({ message: '请输入用户名和密码' });
+      return;
+    }
+    this.isLoading = true;
+
+    const loginData: GeneratedObjectLiteralInterface_1 = {
+      username: this.username,
+      password: this.password
+    };
+
+    try {
+      const response: AxiosResponse = await axios.post(this.loginUrl, loginData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('登录响应:', JSON.stringify(response.data));
+
+      if (response.status === 200) {
+        Prompt.showToast({ message: '登录成功' });
+        router.replaceUrl({
+          url:'pages/dzy/Welcome'
+        });
+        console.log('用户信息:', JSON.stringify(response.data));
+
+      }
+    } catch (error) {
+      console.error('登录失败:', error);
+      Prompt.showToast({ message: '登录失败，请检查用户名和密码' });
+    } finally {
+      this.isLoading = false;
+    }
+  }
 
   build() {
-    RelativeContainer() {
-      Text(this.message)
-        .id('LogHelloWorld')
-        .fontSize($r('app.float.page_text_font_size'))
+    Column() {
+      // 标题
+      Text('用户登录')
+        .fontSize(28)
         .fontWeight(FontWeight.Bold)
-        .alignRules({
-          center: { anchor: '__container__', align: VerticalAlign.Center },
-          middle: { anchor: '__container__', align: HorizontalAlign.Center }
-        })
+        .margin({ bottom: 40 })
+        .fontColor('#333333')
+
+      // 用户名输入框
+      Column() {
+        Text('用户名')
+          .fontSize(16)
+          .fontColor('#666666')
+          .alignSelf(ItemAlign.Start)
+          .margin({ bottom: 8 })
+
+        TextInput({ placeholder: '请输入用户名' })
+          .width('100%')
+          .height(50)
+          .borderRadius(8)
+          .backgroundColor('#F5F5F5')
+          .fontSize(16)
+          .onChange((value: string) => {
+            this.username = value;
+          })
+      }
+      .width('100%')
+      .margin({ bottom: 20 })
+
+      // 密码输入框
+      Column() {
+        Text('密码')
+          .fontSize(16)
+          .fontColor('#666666')
+          .alignSelf(ItemAlign.Start)
+          .margin({ bottom: 8 })
+
+        TextInput({ placeholder: '请输入密码' })
+          .width('100%')
+          .height(50)
+          .borderRadius(8)
+          .backgroundColor('#F5F5F5')
+          .fontSize(16)
+          .type(InputType.Password)
+          .onChange((value: string) => {
+            this.password = value;
+          })
+      }
+      .width('100%')
+      .margin({ bottom: 30 })
+
+      // 登录按钮
+      Button(this.isLoading ? '登录中...' : '登录')
+        .width('100%')
+        .height(50)
+        .fontSize(18)
+        .fontColor('#FFFFFF')
+        .backgroundColor(this.isLoading ? '#CCCCCC' : '#007AFF')
+        .borderRadius(8)
+        .enabled(!this.isLoading)
         .onClick(() => {
-          this.message = 'Welcome';
+          this.login();
         })
+
+      // 其他操作
+      Row() {
+        Text('忘记密码?')
+          .fontSize(14)
+          .fontColor('#007AFF')
+          .onClick(() => {
+            Prompt.showToast({ message: '忘记密码功能' });
+          })
+
+        Blank()
+        Text('注册账号')
+          .fontSize(14)
+          .fontColor('#007AFF')
+          .onClick(() => {
+            router.pushUrl({
+              url:'pages/dzy/Register'
+            });
+            Prompt.showToast({ message: '注册功能' });
+          })
+      }
+      .width('100%')
+      .margin({ top: 20 })
     }
-    .height('100%')
     .width('100%')
+    .height('100%')
+    .padding({ left: 30, right: 30, top: 100 })
+    .backgroundColor('#FFFFFF')
+    .justifyContent(FlexAlign.Start)
   }
 }
