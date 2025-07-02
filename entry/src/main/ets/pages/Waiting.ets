@@ -19,5 +19,8 @@ struct Index {
     }
     .height('100%')
     .width('100%')
+    .backgroundImage('http://sns-webpic-qc.xhscdn.com/202507021524/c2bb773ebada79f006055ad0377abb76/1040g00831hm0ips5ju305n91chb47csb9gmmkp0!nd_dft_wlteh_jpg_3')
+    .backgroundImageSize(ImageSize.Cover)
+    .backgroundImagePosition(Alignment.Center)
   }
 }
